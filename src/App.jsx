@@ -1,56 +1,54 @@
-import React, { useState } from 'react';
-import uuid from 'react-uuid';
+import React, { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const App = () => {
     const msgBoard = document.getElementById('messageBoard');
     const [username, setUsername] = useState('');
     const [message, setMessage] = useState('');
-    // const [dateStamp, setDateStamp] = useState();
-
-    let msgHistory = [
+    const [msgHistory, setMsgHistory] = useState([
         {
-            uId: '550088c1-79a0-d85a-43cd-0c9f6cc219c7',
-            user: '@HumptyDumpty10',
-            msg: 'Peat and Repeat are in a boat together',
+            uId: 'x20D88c1-79a0-d85a-43cd-0c9f6cc219c7',
+            user: 'BitsandBytes',
+            msg: 'Who is left over?',
+            // date.now starts at jan 1 1970 at midnight See bottom of return for Date() current use 
+            create_at: Date.now(),
+            
         },
         {
             uId: 'A20088c1-79a0-d85a-43cd-0c9f6cc219c7',
-            user: '@AllTheKingsHorses',
+            user: 'AllTheKingsHorses',
             msg: 'Peat falls off and into the water',
-
+            create_at: Date.now() - 15000,
         },
         {
-            uId: 'x20D88c1-79a0-d85a-43cd-0c9f6cc219c7',
-            user: '@BitsandBytes',
-            msg: 'Who is left over?',
-
+            uId: '550088c1-79a0-d85a-43cd-0c9f6cc219c7',
+            user: 'HumptyDumpty10',
+            msg: 'Peat and Repeat are in a boat together',
+            create_at: Date.now() - 100000,
         },
-    ]
+    ]);
+    const makePost = () => {
+        // how to validate empty string as no action taken
+        if(!username || !message) return;
 
-    function makePost(user, message) {
-        const div = document.createElement('div');
-        div.setAttribute('Id', uuid());
-        div.classList.add('col-12');
-        div.classList.add('border');
-        div.classList.add('border-primary');
-        div.classList.add('m-1');
-        const u = document.createElement('p');
-        const m = document.createElement('p');
-        u.textContent = "@" + user;
-        m.textContent = '"' + message + '"';
-        div.appendChild(u);
-        div.appendChild(m);
-        msgBoard.appendChild(div);
-        let arrPush = {
-            uId: div.id,
-            user: user,
-            msg: message
-
+        const newMessage = {
+            uId: uuidv4(),
+            user: username,
+            msg: message,
+            create_at: Date.now()
         };
-        msgHistory.push(arrPush);
-        console.log(msgHistory);
+
+        // how to update array useing useState in replacement for push
+        // use the spread operator "..." + val
+        setMsgHistory([newMessage, ...msgHistory]);
+        // this is the going put the new post on top
+
+        // how to reset to empty stings to prevent no dbl post
+        setMessage('');
+        setUsername('');
     }
 
+    
     return (
         <div>
             <header>
@@ -61,17 +59,33 @@ const App = () => {
                     <article className='bg-white'>
                         <div className="form-group m-1">
                             <label htmlFor="my-input">Username</label>
-                            <input id="my-username" className="form-control" type="text" name="" value={username} onChange={e => setUsername(e.target.value)} />
+                            {/* controlled react input */}
+                            <input
+                                id="my-username" 
+                                className="form-control" 
+                                type="text" 
+                                name="" 
+                                value={username} 
+                                onChange={e => setUsername(e.target.value)} 
+                            />
                             <label htmlFor="my-input">Your Message</label>
-                            <input id="my-message" className="form-control" type="text" name="" value={message} onChange={e => setMessage(e.target.value)} />
+                            <input 
+                                id="my-message" 
+                                className="form-control" 
+                                type="text" 
+                                name="" 
+                                value={message} 
+                                onChange={e => setMessage(e.target.value)} 
+                            />
                         </div>
-                        <button className='btn btn-primary' type="button" onClick={e => makePost(username, message)}>Submit post</button>
+                        <button className='btn btn-primary' type="button" onClick={e => makePost()}>Submit post</button>
                     </article>
                     <article id='messageBoard' className='row bg-white'>
                         {msgHistory.map(val => (
                             <div className="col-12 border border-primary m-1" id={`${val.uId}`}>
-                                <p>{val.user}</p>
+                                <p>@{val.user}</p>
                                 <p>{val.msg}</p>
+                                <p>{Date(val.create_at).toLocaleString()}</p>
                             </div>
                         ))}
                     </article>
@@ -104,16 +118,65 @@ export default App
 //     const [loaded, setLoaded] = useState(false);
 
 //     useEffect(() => {
-//         setTimeout(() => {
-//             setLoaded(false)
-//         }, 3000);
-//     }, [loaded])
+    //         setTimeout(() => {
+        //             setLoaded(false)
+        //         }, 3000);
+        //     }, [loaded])
+        
+        //     if (loaded === false) {
+            //         return (
+                //             <>
+                //                 <h1>"Website loading ..."</h1>
+                //                 <button className='btn btn-primary' onClick={e => setLoaded(true)}>Show</button>
+                //             </>
+                //         )
+                //     }
 
-//     if (loaded === false) {
-//         return (
-//             <>
-//                 <h1>"Website loading ..."</h1>
-//                 <button className='btn btn-primary' onClick={e => setLoaded(true)}>Show</button>
-//             </>
-//         )
-//     }
+                
+                // const [dateStamp, setDateStamp] = useState();
+                
+                // this got pushed into a useState
+                // let msgHistory = [
+                //     {
+                //         uId: '550088c1-79a0-d85a-43cd-0c9f6cc219c7',
+                //         user: '@HumptyDumpty10',
+                //         msg: 'Peat and Repeat are in a boat together',
+                //     },
+                //     {
+                //         uId: 'A20088c1-79a0-d85a-43cd-0c9f6cc219c7',
+                //         user: '@AllTheKingsHorses',
+                //         msg: 'Peat falls off and into the water',
+                
+                //     },
+                //     {
+                //         uId: 'x20D88c1-79a0-d85a-43cd-0c9f6cc219c7',
+                //         user: '@BitsandBytes',
+                //         msg: 'Who is left over?',
+                
+                //     },
+                // ]
+                
+                
+                // function makePost(user, message) {
+                //     const div = document.createElement('div');
+                //     div.setAttribute('Id', uuid());
+                //     div.classList.add('col-12');
+                //     div.classList.add('border');
+                //     div.classList.add('border-primary');
+                //     div.classList.add('m-1');
+                //     const u = document.createElement('p');
+                //     const m = document.createElement('p');
+                //     u.textContent = "@" + user;
+                //     m.textContent = '"' + message + '"';
+                //     div.appendChild(u);
+                //     div.appendChild(m);
+                //     msgBoard.appendChild(div);
+                //     let arrPush = {
+                //         uId: div.id,
+                //         user: user,
+                //         msg: message
+                
+                //     };
+                //     msgHistory.push(arrPush);
+                //     console.log(msgHistory);
+                // }

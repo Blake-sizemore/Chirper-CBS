@@ -1,6 +1,6 @@
 import React from 'react';
 
-const chirp = prop=>{
+const Chirp = prop=>{
 
 
     return(
@@ -10,4 +10,4 @@ const chirp = prop=>{
     )
 }
 
-export default chirp
+export default Chirp
